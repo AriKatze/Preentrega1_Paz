@@ -69,18 +69,50 @@ function calculadorAhorros() {
   );
   console.log("El progreso de tus ahorros mes a mes será: ");
   savingsPercentage = 0.15;
-  savingsTableBreakdown(savingsPercentage);
+  const breakdown = savingsTableBreakdown(savingsPercentage);
+
+  if (breakdown.length > 4) {
+    const subset = [
+      ...breakdown.filter((x, index) => index <= 1).map(x => x),
+      "...",
+      ...breakdown.filter((x, index) => index >= breakdown.length -2).map(x => x)
+      ];
+    for (row of subset) {
+      writeRow(row);
+    }
+  } else {
+    for (row of breakdown) {
+      writeRow(row);
+    }
+  }
+
 
   //Esta función imprime los ahorros mes a mes hasta alcanzar el objetivo
 
   function savingsTableBreakdown(savingsPercentage) {
     let savings = 0;
     let month = 0;
+    const result =  [];
+    
     while (savings < financialGoal) {
       savings += monthlySalary * savingsPercentage;
       month++;
-      console.log(`month ${month} savings = ${savings}`);
+      result.push({month, savings})
     }
+
+    return result;
   }
 }
+
+const writeRow = (row) => {
+  if (typeof row == "string") {
+    console.log(row);
+    return;
+  }
+
+  console.log(`month ${row.month} savings = ${row.savings}`);
+};
+
+const persons= [];
+
 calculadorAhorros();
